@@ -19,20 +19,49 @@ class Minesweeper {
         this.minesFound = 0;
         
         this.mineTypes = [
-            { color: 'red', videoId: 'dQw4w9WgXcQ', name: 'Red Mine' },
-            { color: 'blue', videoId: 'dQw4w9WgXcQ', name: 'Blue Mine' },
-            { color: 'green', videoId: 'dQw4w9WgXcQ', name: 'Green Mine' },
-            { color: 'orange', videoId: 'dQw4w9WgXcQ', name: 'Orange Mine' },
-            { color: 'yellow', videoId: 'dQw4w9WgXcQ', name: 'Yellow Mine' },
-            { color: 'pink', videoId: 'dQw4w9WgXcQ', name: 'Pink Mine' },
-            { color: 'cyan', videoId: 'dQw4w9WgXcQ', name: 'Cyan Mine' },
-            { color: 'gray', videoId: 'dQw4w9WgXcQ', name: 'Gray Mine' },
-            { color: 'coral', videoId: 'dQw4w9WgXcQ', name: 'Coral Mine' },
-            { color: 'teal', videoId: 'dQw4w9WgXcQ', name: 'Teal Mine' },
-            { color: 'brown', videoId: 'dQw4w9WgXcQ', name: 'Brown Mine' }
+            { color: 'red', videoId: 'tLl_WsBHWk0', name: 'Red Mine' },
+            { color: 'blue', videoId: 'tLl_WsBHWk0', name: 'Blue Mine' },
+            { color: 'green', videoId: 'tLl_WsBHWk0', name: 'Green Mine' },
+            { color: 'orange', videoId: 'tLl_WsBHWk0', name: 'Orange Mine' },
+            { color: 'yellow', videoId: 'tLl_WsBHWk0', name: 'Yellow Mine' },
+            { color: 'pink', videoId: 'tLl_WsBHWk0', name: 'Pink Mine' },
+            { color: 'cyan', videoId: 'tLl_WsBHWk0', name: 'Cyan Mine' },
+            { color: 'gray', videoId: 'tLl_WsBHWk0', name: 'Gray Mine' },
+            { color: 'coral', videoId: 'tLl_WsBHWk0', name: 'Coral Mine' },
+            { color: 'teal', videoId: 'tLl_WsBHWk0', name: 'Teal Mine' },
+            { color: 'brown', videoId: 'tLl_WsBHWk0', name: 'Brown Mine' }
         ];
         
         this.init();
+        this.initParticles();
+    }
+    
+    initParticles() {
+        this.particlesContainer = document.getElementById('particlesContainer');
+        this.spawnParticle();
+        
+        setInterval(() => {
+            this.spawnParticle();
+        }, 80);
+    }
+    
+    spawnParticle() {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        const x = Math.random() * 100;
+        const y = Math.random() * 100;
+        
+        particle.style.left = x + '%';
+        particle.style.top = y + '%';
+        
+        this.particlesContainer.appendChild(particle);
+        
+        setTimeout(() => {
+            if (particle.parentNode) {
+                particle.parentNode.removeChild(particle);
+            }
+        }, 4000);
     }
     
     init() {
@@ -113,7 +142,6 @@ class Minesweeper {
         
         const cell = this.board[row][col];
         
-        // Remove existing classes
         cellElement.className = 'cell';
         
         if (cell.isRevealed) {
@@ -187,7 +215,7 @@ class Minesweeper {
         if (this.revealedCount === this.boardSize * this.boardSize - this.mineCount) {
             this.gameOver = true;
             setTimeout(() => {
-                this.showVideoModal({ color: 'win', videoId: 'dQw4w9WgXcQ', name: 'Congratulations!' });
+                this.showVideoModal({ color: 'win', videoId: 'tLl_WsBHWk0', name: 'Congratulations!' });
             }, 500);
         }
     }
@@ -241,7 +269,7 @@ class Minesweeper {
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.1);
         } catch (e) {
-            // Audio context not supported
+            
         }
     }
 
@@ -260,13 +288,13 @@ class Minesweeper {
             oscillator.start(audioContext.currentTime);
             oscillator.stop(audioContext.currentTime + 0.25);
         } catch (e) {
-            // Audio context not supported
+
         }
     }
     
     updateMineCount() {
         this.mineCountElement.textContent = this.mineCount;
-        // Update the label based on count
+
         const mineLabel = document.getElementById('mineLabel');
         if (mineLabel) {
             mineLabel.textContent = this.mineCount === 1 ? 'ad' : 'ads';
@@ -279,11 +307,19 @@ class Minesweeper {
     
     showVideoModal(mineType) {
         if (mineType.color === 'win') {
-            this.modalTitle.innerHTML = `<span style="color:rgb(0, 255, 128); font-size: 1.1em;">🎉 Congratulations! You’ve collected every subscriber!</span><span style="color: white; font-size: 1em;"> <br style="margin: 2px 0;"><i>However, you still need a <span style=\"color: #FFD700;\">good editor</span>!</i></span>`;
+            this.modalTitle.innerHTML = `<span style="color:rgb(0, 255, 128); font-size: 1.1em;">🎉 Congratulations! You've collected every subscriber!</span><span style="color: white; font-size: 1em;"> <br style="margin: 2px 0;"><i>However, you still need a <span style=\"color: #FFD700;\">good editor</span>!</i></span>`;
         } else {
             this.modalTitle.innerHTML = `<span style="color: ${this.getMineColor(mineType.color)}; font-size: 1.1em;">💥 ${mineType.color.charAt(0).toUpperCase() + mineType.color.slice(1)} Mine Found!</span><span style="color: white; font-size: 1em;"> You lost all your subscribers...<br style="margin: 2px 0;"><i>To get them back, you need to work with a <span style=\"color: #FFD700;\">good editor</span>!</i></span>`;
         }
-        this.youtubeVideo.src = `https://www.youtube.com/embed/${mineType.videoId}?autoplay=1`;
+        
+        const videoUrl = `https://www.youtube.com/embed/${mineType.videoId}?autoplay=1&mute=1&enablejsapi=1&origin=${window.location.origin}&rel=0&modestbranding=1&playsinline=1`;
+        this.youtubeVideo.src = videoUrl;
+        
+        this.youtubeVideo.onerror = () => {
+            console.log('Primary video failed, using fallback');
+            this.youtubeVideo.src = `https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1&enablejsapi=1&origin=${window.location.origin}&rel=0&modestbranding=1&playsinline=1`;
+        };
+        
         this.videoModal.style.display = 'block';
     }
     
