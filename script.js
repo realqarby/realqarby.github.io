@@ -1,7 +1,7 @@
-class MinesweeperAds {
+class Minesweeper {
     constructor() {
         this.boardSize = 5;
-        this.mineCount = 11;
+        this.mineCount = 1;
         this.board = [];
         this.gameBoard = document.getElementById('gameBoard');
         this.mineCountElement = document.getElementById('mineCount');
@@ -19,17 +19,17 @@ class MinesweeperAds {
         this.minesFound = 0;
         
         this.mineTypes = [
-            { color: 'red', videoId: '6P5lYRjPTss', name: 'Red Mine' },
-            { color: 'blue', videoId: '6P5lYRjPTss', name: 'Blue Mine' },
-            { color: 'green', videoId: '6P5lYRjPTss', name: 'Green Mine' },
-            { color: 'orange', videoId: '6P5lYRjPTss', name: 'Orange Mine' },
-            { color: 'yellow', videoId: '6P5lYRjPTss', name: 'Yellow Mine' },
-            { color: 'pink', videoId: '6P5lYRjPTss', name: 'Pink Mine' },
-            { color: 'cyan', videoId: '6P5lYRjPTss', name: 'Cyan Mine' },
-            { color: 'gray', videoId: '6P5lYRjPTss', name: 'Gray Mine' },
-            { color: 'coral', videoId: '6P5lYRjPTss', name: 'Coral Mine' },
-            { color: 'teal', videoId: '6P5lYRjPTss', name: 'Teal Mine' },
-            { color: 'brown', videoId: '6P5lYRjPTss', name: 'Brown Mine' }
+            { color: 'red', videoId: 'dQw4w9WgXcQ', name: 'Red Mine' },
+            { color: 'blue', videoId: 'dQw4w9WgXcQ', name: 'Blue Mine' },
+            { color: 'green', videoId: 'dQw4w9WgXcQ', name: 'Green Mine' },
+            { color: 'orange', videoId: 'dQw4w9WgXcQ', name: 'Orange Mine' },
+            { color: 'yellow', videoId: 'dQw4w9WgXcQ', name: 'Yellow Mine' },
+            { color: 'pink', videoId: 'dQw4w9WgXcQ', name: 'Pink Mine' },
+            { color: 'cyan', videoId: 'dQw4w9WgXcQ', name: 'Cyan Mine' },
+            { color: 'gray', videoId: 'dQw4w9WgXcQ', name: 'Gray Mine' },
+            { color: 'coral', videoId: 'dQw4w9WgXcQ', name: 'Coral Mine' },
+            { color: 'teal', videoId: 'dQw4w9WgXcQ', name: 'Teal Mine' },
+            { color: 'brown', videoId: 'dQw4w9WgXcQ', name: 'Brown Mine' }
         ];
         
         this.init();
@@ -107,6 +107,32 @@ class MinesweeperAds {
         }
     }
     
+    renderSingleCell(row, col) {
+        const cellElement = this.gameBoard.querySelector(`[data-row="${row}"][data-col="${col}"]`);
+        if (!cellElement) return;
+        
+        const cell = this.board[row][col];
+        
+        // Remove existing classes
+        cellElement.className = 'cell';
+        
+        if (cell.isRevealed) {
+            cellElement.classList.add('revealed');
+            if (cell.isMine) {
+                cellElement.classList.add('mine');
+                if (cell.mineType) {
+                    cellElement.classList.add(`mine-${cell.mineType.color}`);
+                }
+                cellElement.textContent = '💣';
+            } else {
+                cellElement.textContent = '💎';
+            }
+        } else if (cell.isFlagged) {
+            cellElement.classList.add('flagged');
+            cellElement.textContent = '🚩';
+        }
+    }
+    
     setupEventListeners() {
         this.gameBoard.addEventListener('click', (e) => {
             if (e.target.classList.contains('cell') && !this.gameOver) {
@@ -156,9 +182,9 @@ class MinesweeperAds {
         }
         
         this.revealCell(row, col);
-        this.renderBoard();
+        this.renderSingleCell(row, col);
         
-        if (this.minesFound === this.mineCount) {
+        if (this.revealedCount === this.boardSize * this.boardSize - this.mineCount) {
             this.gameOver = true;
             setTimeout(() => {
                 this.showVideoModal({ color: 'win', videoId: 'dQw4w9WgXcQ', name: 'Congratulations!' });
@@ -240,6 +266,11 @@ class MinesweeperAds {
     
     updateMineCount() {
         this.mineCountElement.textContent = this.mineCount;
+        // Update the label based on count
+        const mineLabel = document.getElementById('mineLabel');
+        if (mineLabel) {
+            mineLabel.textContent = this.mineCount === 1 ? 'ad' : 'ads';
+        }
     }
     
     updateSubscribers() {
@@ -248,9 +279,9 @@ class MinesweeperAds {
     
     showVideoModal(mineType) {
         if (mineType.color === 'win') {
-            this.modalTitle.textContent = '🎉 Congratulations! You Won!';
+            this.modalTitle.innerHTML = `<span style="color:rgb(0, 255, 128); font-size: 1.1em;">🎉 Congratulations! You’ve collected every subscriber!</span><span style="color: white; font-size: 1em;"> <br style="margin: 2px 0;"><i>However, you still need a <span style=\"color: #FFD700;\">good editor</span>!</i></span>`;
         } else {
-            this.modalTitle.innerHTML = `<span style="color: ${this.getMineColor(mineType.color)}; font-size: 0.8em;">💥 ${mineType.color.charAt(0).toUpperCase() + mineType.color.slice(1)} Mine Found!</span><span style="color: white; font-size: 0.75em;"> You lost all your subscribers!<br style="margin: 2px 0;"><i>To get them back, you need to work with a <span style=\"color: #FFD700;\">good editor</span>!</i></span>`;
+            this.modalTitle.innerHTML = `<span style="color: ${this.getMineColor(mineType.color)}; font-size: 1.1em;">💥 ${mineType.color.charAt(0).toUpperCase() + mineType.color.slice(1)} Mine Found!</span><span style="color: white; font-size: 1em;"> You lost all your subscribers...<br style="margin: 2px 0;"><i>To get them back, you need to work with a <span style=\"color: #FFD700;\">good editor</span>!</i></span>`;
         }
         this.youtubeVideo.src = `https://www.youtube.com/embed/${mineType.videoId}?autoplay=1`;
         this.videoModal.style.display = 'block';
@@ -297,7 +328,7 @@ class MinesweeperAds {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const game = new MinesweeperAds();
+    const game = new Minesweeper();
     
     window.minesweeperGame = game;
 });
