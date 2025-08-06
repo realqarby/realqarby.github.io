@@ -1,0 +1,527 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    gap: 20px;
+}
+
+.container {
+    text-align: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 18px;
+    max-width: 600px;
+    width: 100%;
+}
+
+.game-header {
+    margin-bottom: 30px;
+}
+
+.game-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #ffd700, #ff6b35);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.by-qarby {
+    font-size: 1rem;
+    color: #ccc;
+    font-weight: normal;
+    margin-left: 10px;
+    -webkit-text-fill-color: #ccc;
+    background: none;
+    text-shadow: none;
+}
+
+.game-info {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.mine-count, .score {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.score {
+    background: linear-gradient(45deg, rgba(255, 215, 0, 0.2), rgba(255, 107, 53, 0.2));
+    border-color: #ffd700;
+}
+
+.game-board {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
+    margin: 30px auto;
+    max-width: 520px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.cell {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+    border: 2px solid #333;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.cell::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+    transition: left 0.5s;
+}
+
+.cell:hover::before {
+    left: 100%;
+}
+
+.cell:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(255, 215, 0, 0.3);
+    border-color: #ffd700;
+}
+
+.cell:active {
+    transform: translateY(0);
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.2);
+}
+
+.cell.revealed {
+    background: linear-gradient(145deg, #00ff88, #00cc66);
+    border-color: #00ff88;
+    color: #000;
+    animation: revealCell 0.5s ease-out;
+}
+
+.cell.mine {
+    background: linear-gradient(145deg, #ff4444, #cc0000);
+    border-color: #ff4444;
+    color: #fff;
+    animation: mineExplosion 0.8s ease-out;
+}
+
+/* Farklı renkli mayınlar */
+.cell.mine-red {
+    background: linear-gradient(145deg, #ff4444, #cc0000);
+    border-color: #ff4444;
+}
+
+.cell.mine-blue {
+    background: linear-gradient(145deg, #4444ff, #0000cc);
+    border-color: #4444ff;
+}
+
+.cell.mine-green {
+    background: linear-gradient(145deg, #44ff44, #00cc00);
+    border-color: #44ff44;
+}
+
+.cell.mine-purple {
+    background: linear-gradient(145deg, #ff44ff, #cc00cc);
+    border-color: #ff44ff;
+}
+
+.cell.mine-orange {
+    background: linear-gradient(145deg, #ff8844, #cc6600);
+    border-color: #ff8844;
+}
+
+.cell.mine-yellow {
+    background: linear-gradient(145deg, #ffff44, #cccc00);
+    border-color: #ffff44;
+    color: #000;
+}
+
+.cell.mine-pink {
+    background: linear-gradient(145deg, #ff44aa, #cc0088);
+    border-color: #ff44aa;
+}
+
+.cell.mine-cyan {
+    background: linear-gradient(145deg, #44ffff, #00cccc);
+    border-color: #44ffff;
+    color: #000;
+}
+
+.cell.mine-lime {
+    background: linear-gradient(145deg, #88ff44, #66cc00);
+    border-color: #88ff44;
+    color: #000;
+}
+
+.cell.mine-brown {
+    background: linear-gradient(145deg, #aa6644, #884400);
+    border-color: #aa6644;
+}
+
+.cell.mine-gray {
+    background: linear-gradient(145deg, #888888, #666666);
+    border-color: #888888;
+}
+
+.cell.mine-teal {
+    background: linear-gradient(145deg, #44aaaa, #008888);
+    border-color: #44aaaa;
+}
+
+.cell.mine-indigo {
+    background: linear-gradient(145deg, #4444aa, #000088);
+    border-color: #4444aa;
+}
+
+.cell.mine-violet {
+    background: linear-gradient(145deg, #aa44aa, #880088);
+    border-color: #aa44aa;
+}
+
+.cell.mine-coral {
+    background: linear-gradient(145deg, #ff6666, #cc4444);
+    border-color: #ff6666;
+}
+
+.cell.flagged {
+    background: linear-gradient(145deg, #ffaa00, #ff8800);
+    border-color: #ffaa00;
+    color: #000;
+}
+
+@keyframes revealCell {
+    0% {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes mineExplosion {
+    0% {
+        transform: scale(1);
+    }
+    25% {
+        transform: scale(1.3);
+    }
+    50% {
+        transform: scale(0.8);
+    }
+    75% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.game-controls {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.new-game-btn {
+    background: linear-gradient(45deg, #ffd700, #ff6b35);
+    color: #000;
+    border: none;
+    padding: 15px 25px;
+    font-size: 1rem;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3);
+}
+
+.new-game-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+}
+
+.new-game-btn:active {
+    transform: translateY(-1px);
+}
+
+.instructions {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.instructions p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.contact-info {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    margin-top: 20px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.contact-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+}
+
+.contact-icon {
+    width: 24px;
+    height: 24px;
+    color: #fff;
+}
+
+.discord-icon {
+    color: #5865F2;
+}
+
+.email-icon {
+    color: #EA4335;
+}
+
+.contact-item span {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #fff;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    left: 50%;
+    top: 45%;
+    transform: translate(-50%, -50%);
+    width: 1000px;
+    max-width: 99vw;
+    height: 600px;
+    max-height: 99vh;
+    background-color: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(10px);
+    animation: fadeIn 0.5s ease-out;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+@media (max-width: 600px) {
+    .modal {
+        width: 98vw;
+        min-width: 0;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        height: 80vh;
+        max-height: 80vh;
+    }
+    .container {
+        max-width: 98vw;
+        padding: 10px;
+    }
+    .game-board {
+        max-width: 98vw;
+        padding: 10px;
+    }
+}
+
+.modal-content {
+    background: none;
+    margin: 0;
+    padding: 15px 15px 15px 15px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 100%;
+    height: 100%;
+    border: none;
+    box-shadow: none;
+    position: relative;
+    animation: none;
+    box-sizing: border-box;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    transition: color 0.3s ease;
+}
+
+.close-btn:hover {
+    color: #ffd700;
+}
+
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffd700;
+    font-size: 1.5rem;
+}
+
+.video-container {
+    position: relative;
+    width: 89%;
+    height: 0;
+    padding-bottom: 49%;
+    margin: 5px auto;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    max-width: 100%;
+    max-height: 100%;
+    box-sizing: border-box;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    body {
+        gap: 20px;
+    }
+    
+    .container {
+        padding: 15px;
+        margin: 10px;
+    }
+    
+    .game-header h1 {
+        font-size: 2rem;
+    }
+    
+    .cell {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+    
+    .game-info {
+        gap: 15px;
+        font-size: 1rem;
+    }
+    
+    .modal-content {
+        margin: 10% auto;
+        padding: 20px;
+    }
+    
+    .game-controls {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .contact-info {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .contact-item {
+        padding: 8px 15px;
+    }
+    
+    .contact-icon {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .contact-item span {
+        font-size: 0.9rem;
+    }
+}
