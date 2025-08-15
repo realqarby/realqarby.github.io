@@ -71,6 +71,7 @@ class Minesweeper {
         this.updateMineCount();
         this.updateSubscribers();
         this.setupEventListeners();
+        this.setupPortfolioListeners();
     }
     
     createBoard() {
@@ -183,6 +184,41 @@ class Minesweeper {
             if (e.target === this.videoModal) {
                 this.hideVideoModal();
             }
+        });
+    }
+    
+    setupPortfolioListeners() {
+        const portfolioItems = document.querySelectorAll('.portfolio-item');
+        const portfolioDescription = document.getElementById('portfolioDescription');
+        
+        portfolioItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const link = item.getAttribute('data-link');
+                const description = item.getAttribute('data-description');
+                
+                // Update description
+                portfolioDescription.innerHTML = `<p>${description}</p>`;
+                
+                // Open link in new tab
+                if (link && link !== '#') {
+                    window.open(link, '_blank');
+                }
+                
+                // Add click animation
+                item.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    item.style.transform = '';
+                }, 150);
+            });
+            
+            item.addEventListener('mouseenter', () => {
+                const description = item.getAttribute('data-description');
+                portfolioDescription.innerHTML = `<p>${description}</p>`;
+            });
+            
+            item.addEventListener('mouseleave', () => {
+                portfolioDescription.innerHTML = `<p>Hover over a portfolio item to see its description, click to view the project.</p>`;
+            });
         });
     }
     
@@ -303,6 +339,11 @@ class Minesweeper {
     
     updateSubscribers() {
         this.scoreElement.textContent = this.subscribers;
+        
+        const scoreLabel = document.getElementById('scoreLabel');
+        if (scoreLabel) {
+            scoreLabel.textContent = this.subscribers === 1 ? 'subscriber' : 'subscribers';
+        }
     }
     
     showVideoModal(mineType) {
@@ -368,7 +409,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     window.minesweeperGame = game;
 });
-
 const style = document.createElement('style');
 style.textContent = `
     @keyframes fadeOut {
@@ -377,3 +417,4 @@ style.textContent = `
     }
 `;
 document.head.appendChild(style);
+
